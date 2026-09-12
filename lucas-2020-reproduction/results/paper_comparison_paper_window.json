@@ -1,0 +1,13 @@
+{
+  "paper_xgboost": {
+    "MAE": 7.89,
+    "R2_pct": 76.8,
+    "MSE": 124.74
+  },
+  "this_reproduction_xgboost": {
+    "model": "XGBoost",
+    "MAE": 7.88,
+    "MSE": 161.86,
+    "R2_pct": 65.9
+  }
+}

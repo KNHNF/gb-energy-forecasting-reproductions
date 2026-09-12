@@ -1,0 +1,13 @@
+[project]
+name = "deng-2023-reproduction"
+version = "0.1.0"
+description = "Independent reproduction attempt of Deng et al. (2023)'s seasonal-attention BiLSTM for GB imbalance price forecasting, using gb-bm-data as the data layer"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "pandas>=2.0",
+    "numpy",
+    "scikit-learn>=1.4",
+    "torch>=2.0",
+    "pyarrow",
+]

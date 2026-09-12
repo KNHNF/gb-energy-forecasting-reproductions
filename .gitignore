@@ -1,0 +1,8 @@
+data/raw/
+data/raw_paper_window/
+data/processed/
+__pycache__/
+*.pyc
+fetch_log.txt
+fetch_log_paper_window.txt
+bunn_train_log.txt

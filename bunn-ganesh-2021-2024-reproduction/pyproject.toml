@@ -1,0 +1,14 @@
+[project]
+name = "bunn-ganesh-2021-2024-reproduction"
+version = "0.1.0"
+description = "Independent reproduction of Bunn et al. (2021)'s regime-switching model and Ganesh & Bunn (2024)'s FCNN point/density forecasts for GB balancing market price, using gb-bm-data as the data layer"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "pandas>=2.0",
+    "numpy",
+    "scikit-learn>=1.4",
+    "statsmodels>=0.14",
+    "torch>=2.0",
+    "pyarrow",
+]

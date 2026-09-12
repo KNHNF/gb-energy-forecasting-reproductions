@@ -1,0 +1,5 @@
+model,MAE,MSE,R2_pct
+GradientBoosting,7.78,151.95,68.0
+RandomForest,8.66,170.89,64.0
+XGBoost,7.88,161.86,65.9
+LSTM,11.35,296.89,37.5

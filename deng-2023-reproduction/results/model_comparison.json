@@ -1,0 +1,32 @@
+{
+  "point_forecast_metrics": {
+    "BiLSTM_baseline": {
+      "MAE": 11.67,
+      "MSE": 297.08,
+      "R2_pct": 37.5
+    },
+    "SeasonalAttentionBiLSTM": {
+      "MAE": 11.89,
+      "MSE": 311.81,
+      "R2_pct": 34.4
+    }
+  },
+  "extreme_event_comparison": {
+    "quantile": 0.05,
+    "BiLSTM_baseline": {
+      "n_extreme": 403,
+      "MAE_extreme": 25.44,
+      "MAE_normal": 10.12
+    },
+    "SeasonalAttentionBiLSTM": {
+      "n_extreme": 403,
+      "MAE_extreme": 26.36,
+      "MAE_normal": 10.26
+    },
+    "pct_improvement_attention_over_baseline": -3.6,
+    "paper_reported_range_pct": [
+      25,
+      37
+    ]
+  }
+}

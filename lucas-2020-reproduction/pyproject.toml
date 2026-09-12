@@ -1,0 +1,13 @@
+[project]
+name = "lucas-2020-reproduction"
+version = "0.1.0"
+description = "Independent reproduction of Lucas et al. (2020), 'Price Forecasting for the Balancing Energy Market Using Machine-Learning Regression' (Energies 13(20):5420), using gb-bm-data as the data layer"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "pandas>=2.0",
+    "numpy",
+    "scikit-learn>=1.4",
+    "xgboost>=2.0",
+    "pyarrow",
+]

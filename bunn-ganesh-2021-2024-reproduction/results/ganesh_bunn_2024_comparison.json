@@ -1,0 +1,34 @@
+{
+  "point_forecast": {
+    "this_reproduction": {
+      "RMSE": 15.12,
+      "MAE": 10.16,
+      "R2": 0.48
+    },
+    "paper_FCNN": {
+      "RMSE": 14.5,
+      "MAE": 11.4,
+      "R2": 0.66
+    },
+    "paper_regime_switching_benchmark_RMSE": 14.7
+  },
+  "density_forecast": {
+    "quantiles": [
+      0.01,
+      0.05,
+      0.5,
+      0.95,
+      0.99
+    ],
+    "empirical_coverage_90pct_interval": 0.881,
+    "empirical_coverage_98pct_interval": 0.982,
+    "pinball_loss_by_quantile": {
+      "0.01": 0.439,
+      "0.05": 1.477,
+      "0.5": 4.496,
+      "0.95": 1.759,
+      "0.99": 0.589
+    },
+    "note": "no paper pinball-loss numbers reproduced here (not confidently recalled from the source PDF); coverage and pinball loss are reported as found on this reproduction's own predictions."
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "paper": {
+    "in_sample_RMSE": {
+      "regime_switching": 19.29,
+      "linear": 18.98
+    },
+    "out_of_sample_RMSE": {
+      "regime_switching": 14.7,
+      "linear": 15.4
+    },
+    "note": "paper also reports a train-2017-19/forecast-2016 backtest (RS 22.1, linear 24.5) and a Nov-Dec 2016 rolling backtest (RS 20.8, linear 23.0, GARCH 23.4); neither is reproduced here, only in-sample and one chronological 80/20 out-of-sample split."
+  },
+  "this_reproduction": {
+    "in_sample_RMSE": {
+      "regime_switching": 27.43,
+      "linear": 25.78
+    },
+    "out_of_sample_RMSE": {
+      "regime_switching": 16.47,
+      "linear": 15.37
+    }
+  }
+}
