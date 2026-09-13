@@ -11,13 +11,47 @@ gb-bm-data:
   System/Imbalance Price (lagged)    systemBuyPrice, lagged   Direct match
   NIV (lag 2)                        netImbalanceVolume,      Direct match
                                       lag 2
+  Inter Delta (interconnector flow   NOT REPRODUCED            Tried 2026-09-12:
+  change, lag 2)                                               BMRSClient.get_
+                                                                interconnector_flows()
+                                                                was briefly implemented
+                                                                against /generation/
+                                                                outturn/interconnectors,
+                                                                but a direct retest showed
+                                                                the endpoint ignores
+                                                                historical from/to params
+                                                                and only returns the last
+                                                                few live days regardless
+                                                                of what is requested, same
+                                                                failure mode as DATL and
+                                                                FOU2T14D. The client method
+                                                                now raises
+                                                                LiveOnlyEndpointError
+                                                                instead. An earlier version
+                                                                of this note wrongly
+                                                                claimed this was fixed,
+                                                                based on a misread test
+                                                                result; corrected the same
+                                                                day.
   De-rated Margin (DRM, lag 2)       NOT REPRODUCED            BMRSClient.get_forecast
                                                                 ("FOU2T14D") raises
                                                                 LiveOnlyEndpointError by
-                                                                design; no historical
-                                                                margin/availability data
-                                                                recoverable through this
-                                                                client.
+                                                                design. Checked the NESO
+                                                                Data Portal directly
+                                                                2026-09-12 as an
+                                                                alternative source: no
+                                                                dataset named LOLP or
+                                                                de-rated margin exists
+                                                                there. The closest
+                                                                analogues, Weekly/Daily
+                                                                OPMR and NRAPM Forecast,
+                                                                are rolling 2-14-day/
+                                                                2-52-week-ahead forecasts
+                                                                with no confirmed
+                                                                historical archive back to
+                                                                this reproduction's
+                                                                2016-2019 window. Still not
+                                                                reproducible.
   Wind/Solar/Demand forecast error   NOT REPRODUCED            Requires day-ahead
   (lag 2, each)                                                forecasts vs actuals;
                                                                 BMRS v2's forecast
@@ -27,22 +61,28 @@ gb-bm-data:
                                                                 actuals only, no
                                                                 historical forecast to
                                                                 diff against.
-  NONBM (non-BM STOR volumes)        NOT REPRODUCED            No endpoint for this in
-                                                                gb-bm-data; would need a
-                                                                separate BMRS dataset this
-                                                                client does not wrap.
-  Inter Delta (interconnector flow   NOT REPRODUCED            No interconnector-flow
-  change, lag 2)                                               endpoint in gb-bm-data.
+  NONBM (non-BM STOR volumes)        generation, lag 2         Partial match. The
+                                                                historical endpoint
+                                                                returned 23 events in
+                                                                this window. Values are
+                                                                summed per settlement
+                                                                period and missing
+                                                                periods are filled with
+                                                                zero. The sparse series
+                                                                cannot identify every
+                                                                non-BM reserve product.
   LOLP (Ganesh & Bunn only,          netImbalanceVolume        PROXY, same limitation as
   sparse binary dummy)               (as in the other          documented in
                                       reproductions in this     lucas-2020-reproduction:
                                       data layer)               no LOLP endpoint in BMRS
-                                                                v2.
+                                                                v2 or, as of the 2026-09-12
+                                                                check above, in the NESO
+                                                                Data Portal either.
 
-This is a more severe data gap than Lucas et al. (2020): of 7-8 explanatory
-variables across the two papers, only System Price and NIV survive intact.
-Reported honestly rather than worked around by inventing proxies for
-variables gb-bm-data genuinely cannot supply.
+This remains a more severe data gap than Lucas et al. (2020): of 7-8
+explanatory variables, System Price and NIV are direct matches and NONBM is
+a sparse partial match. Reported honestly rather than worked around by
+inventing proxies for variables gb-bm-data genuinely cannot supply.
 """
 from __future__ import annotations
 
@@ -60,13 +100,21 @@ def load() -> pd.DataFrame:
     sp = pd.read_csv(RAW / "system_prices.csv")
     demand = pd.read_csv(RAW / "demand_outturn.csv")
     mix = pd.read_csv(RAW / "generation_mix.csv")
+    nonbm = pd.read_csv(RAW / "nonbm_stor.csv")
 
     sp = sp[["settlementDate", "settlementPeriod", "systemBuyPrice", "netImbalanceVolume"]].copy()
     demand = demand[["settlementDate", "settlementPeriod", "demand_mw"]].copy()
     mix = mix[["settlementDate", "settlementPeriod", "wind_pct", "solar_pct"]].copy()
+    nonbm = (
+        nonbm.groupby(["settlementDate", "settlementPeriod"], as_index=False)["generation"]
+        .sum()
+        .rename(columns={"generation": "nonbm_stor_mw"})
+    )
 
     df = sp.merge(demand, on=["settlementDate", "settlementPeriod"], how="left")
     df = df.merge(mix, on=["settlementDate", "settlementPeriod"], how="left")
+    df = df.merge(nonbm, on=["settlementDate", "settlementPeriod"], how="left")
+    df["nonbm_stor_mw"] = df["nonbm_stor_mw"].fillna(0.0)
     return df
 
 
@@ -88,6 +136,7 @@ def engineer(df: pd.DataFrame) -> pd.DataFrame:
     for lag in (1, 2):
         df[f"price_lag{lag}"] = df["price"].shift(lag)
     df["niv_lag2"] = df["netImbalanceVolume"].shift(2)
+    df["nonbm_stor_lag2"] = df["nonbm_stor_mw"].shift(2)
 
     # calendar, used by the density-forecast (Ganesh & Bunn) feature set only
     df["hour"] = ((df["settlementPeriod"] - 1) // 2).astype(int)

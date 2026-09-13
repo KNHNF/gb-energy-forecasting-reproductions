@@ -36,7 +36,7 @@ PROC = ROOT / "data" / "processed"
 RESULTS = ROOT / "results"
 RESULTS.mkdir(parents=True, exist_ok=True)
 
-FEATURE_COLS = ["price_lag1", "price_lag2", "niv_lag2", "hour", "day_of_week", "month", "is_weekend"]
+FEATURE_COLS = ["price_lag1", "price_lag2", "niv_lag2", "nonbm_stor_lag2", "hour", "day_of_week", "month", "is_weekend"]
 TARGET = "price"
 QUANTILES = [0.01, 0.05, 0.50, 0.95, 0.99]
 

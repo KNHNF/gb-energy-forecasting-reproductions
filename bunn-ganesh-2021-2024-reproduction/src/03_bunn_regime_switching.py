@@ -12,11 +12,10 @@ layer's paper reproductions, and that choice is reported plainly rather than
 presented as matching the paper's exact backtest design.
 
 Feature set: price AR(2) (handled internally by MarkovAutoregression's
-order=2) and niv_lag2 as an exogenous regressor influencing both the
-regime-conditional mean and the regime transition probabilities. This is 2
-of the paper's 7 explanatory variables; see 02_build_features.py for why the
-other 5 (de-rated margin, wind/solar/demand forecast error, NONBM, inter
-delta) are not reproducible through gb-bm-data.
+order=2), niv_lag2 and nonbm_stor_lag2 as exogenous regressors influencing
+both the regime-conditional mean and the regime transition probabilities.
+NONBM is sparse, with 23 reported events over the window, so it is a partial
+match. See 02_build_features.py for the remaining unreproducible regressors.
 """
 from __future__ import annotations
 
@@ -49,7 +48,7 @@ def rmse(y_true, y_pred) -> float:
 
 
 def fit_linear(train: pd.DataFrame) -> sm.regression.linear_model.RegressionResultsWrapper:
-    X = sm.add_constant(train[["price_lag1", "price_lag2", "niv_lag2"]])
+    X = sm.add_constant(train[["price_lag1", "price_lag2", "niv_lag2", "nonbm_stor_lag2"]])
     y = train["price"]
     return sm.OLS(y, X).fit()
 
@@ -68,10 +67,10 @@ def run() -> None:
     # --- linear AR benchmark ---
     print("\nFitting linear AR benchmark (OLS)...")
     linear_model = fit_linear(train)
-    linear_in_sample_pred = linear_model.predict(sm.add_constant(train[["price_lag1", "price_lag2", "niv_lag2"]]))
+    linear_in_sample_pred = linear_model.predict(sm.add_constant(train[["price_lag1", "price_lag2", "niv_lag2", "nonbm_stor_lag2"]]))
     linear_in_sample_rmse = rmse(train["price"], linear_in_sample_pred)
 
-    X_test = sm.add_constant(test[["price_lag1", "price_lag2", "niv_lag2"]], has_constant="add")
+    X_test = sm.add_constant(test[["price_lag1", "price_lag2", "niv_lag2", "nonbm_stor_lag2"]], has_constant="add")
     linear_test_pred = linear_model.predict(X_test)
     linear_test_rmse = rmse(test["price"], linear_test_pred)
     print(f"  in-sample RMSE:     {linear_in_sample_rmse:.2f}")
@@ -97,6 +96,9 @@ def run() -> None:
     niv_mean, niv_std = train["niv_lag2"].mean(), train["niv_lag2"].std()
     train["niv_lag2_z"] = (train["niv_lag2"] - niv_mean) / niv_std
     df["niv_lag2_z"] = (df["niv_lag2"] - niv_mean) / niv_std
+    nonbm_mean, nonbm_std = train["nonbm_stor_lag2"].mean(), train["nonbm_stor_lag2"].std()
+    train["nonbm_stor_lag2_z"] = (train["nonbm_stor_lag2"] - nonbm_mean) / nonbm_std
+    df["nonbm_stor_lag2_z"] = (df["nonbm_stor_lag2"] - nonbm_mean) / nonbm_std
 
     clip_lo, clip_hi = train["price"].quantile([0.001, 0.999])
     print(f"  winsorizing price to [{clip_lo:.1f}, {clip_hi:.1f}] for MLE stability "
@@ -104,8 +106,8 @@ def run() -> None:
     train["price_clipped"] = train["price"].clip(clip_lo, clip_hi)
 
     endog = train["price_clipped"].to_numpy()
-    exog = train[["niv_lag2_z"]].to_numpy()
-    exog_tvtp = sm.add_constant(train[["niv_lag2_z"]]).to_numpy()
+    exog = train[["niv_lag2_z", "nonbm_stor_lag2_z"]].to_numpy()
+    exog_tvtp = sm.add_constant(train[["niv_lag2_z", "nonbm_stor_lag2_z"]]).to_numpy()
 
     t0 = time.time()
     ms_model = MarkovAutoregression(
@@ -136,8 +138,8 @@ def run() -> None:
     # paper's specific rolling re-estimation scheme.
     df["price_clipped"] = df["price"].clip(clip_lo, clip_hi)
     full_endog = df["price_clipped"].to_numpy()
-    full_exog = df[["niv_lag2_z"]].to_numpy()
-    full_exog_tvtp = sm.add_constant(df[["niv_lag2_z"]]).to_numpy()
+    full_exog = df[["niv_lag2_z", "nonbm_stor_lag2_z"]].to_numpy()
+    full_exog_tvtp = sm.add_constant(df[["niv_lag2_z", "nonbm_stor_lag2_z"]]).to_numpy()
     ms_full_model = MarkovAutoregression(
         full_endog, k_regimes=2, order=2, exog=full_exog, exog_tvtp=full_exog_tvtp,
         switching_ar=True, switching_exog=True, switching_variance=True,

@@ -38,6 +38,16 @@ def main() -> None:
     mix.to_csv(RAW_DIR / "generation_mix.csv", index=False)
     print(f"  {len(mix)} rows -> data/raw/generation_mix.csv")
 
+    # get_interconnector_flows() is not called here: confirmed 2026-09-12 to be
+    # live-only (ignores from/to entirely), see gb-bm-data's client.py and this
+    # repo's own README for the correction history.
+
+    print(f"Fetching non-BM STOR volumes {START} to {END} ...")
+    nonbm = bmrs.get_nonbm_stor(START, END)
+    nonbm.to_csv(RAW_DIR / "nonbm_stor.csv", index=False)
+    print(f"  {len(nonbm)} rows -> data/raw/nonbm_stor.csv"
+          + ("  (empty on every window tried so far, see gb-bm-data client docstring)" if nonbm.empty else ""))
+
     print("Done.")
 
 
