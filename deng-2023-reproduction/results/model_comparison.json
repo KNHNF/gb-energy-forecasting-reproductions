@@ -1,29 +1,31 @@
 {
+  "architecture_note": "univariate, elementwise seasonal gate x*f_A, per confirmed Algorithm 1 (2026-09-12 re-read)",
   "point_forecast_metrics": {
     "BiLSTM_baseline": {
-      "MAE": 11.67,
-      "MSE": 297.08,
-      "R2_pct": 37.5
+      "MAE": 21.04,
+      "RMSE": 25.75,
+      "R2_pct": -48.7
     },
     "SeasonalAttentionBiLSTM": {
-      "MAE": 11.89,
-      "MSE": 311.81,
-      "R2_pct": 34.4
+      "MAE": 23.19,
+      "RMSE": 27.91,
+      "R2_pct": -74.7
     }
   },
+  "paper_reported_rmse_1step_full_sample": 13.035,
   "extreme_event_comparison": {
     "quantile": 0.05,
     "BiLSTM_baseline": {
-      "n_extreme": 403,
-      "MAE_extreme": 25.44,
-      "MAE_normal": 10.12
+      "n_extreme": 218,
+      "MAE_extreme": 37.38,
+      "MAE_normal": 19.04
     },
     "SeasonalAttentionBiLSTM": {
-      "n_extreme": 403,
-      "MAE_extreme": 26.36,
-      "MAE_normal": 10.26
+      "n_extreme": 218,
+      "MAE_extreme": 28.13,
+      "MAE_normal": 22.59
     },
-    "pct_improvement_attention_over_baseline": -3.6,
+    "pct_improvement_attention_over_baseline": 24.7,
     "paper_reported_range_pct": [
       25,
       37

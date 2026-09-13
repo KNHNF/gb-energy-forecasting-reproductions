@@ -1,3 +1,3 @@
-model,MAE,MSE,R2_pct
-BiLSTM_baseline,11.67,297.08,37.5
-SeasonalAttentionBiLSTM,11.89,311.81,34.4
+model,MAE,RMSE,R2_pct
+BiLSTM_baseline,21.04,25.75,-48.7
+SeasonalAttentionBiLSTM,23.19,27.91,-74.7
