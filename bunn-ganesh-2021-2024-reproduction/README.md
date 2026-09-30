@@ -45,10 +45,10 @@ Of the two papers' explanatory variables:
 | System/Imbalance Price (AR lags) | `price_lag1`, `price_lag2` (or `order=2` in `MarkovAutoregression`) | Direct match |
 | NIV (lag 2) | `niv_lag2` | Direct match |
 | De-rated Margin (DRM, lag 2) | Not reproduced | `BMRSClient.get_forecast("FOU2T14D")` raises `LiveOnlyEndpointError` by design; no historical margin data recoverable |
-| Wind/Solar/Demand forecast error (lag 2, each) | Not reproduced | Requires day-ahead forecasts vs actuals; BMRS v2's forecast datasets are live-only, gb-bm-data has actuals only |
+| Wind/Solar/Demand forecast error (lag 2, each) | Not reproduced | Requires day-ahead forecasts vs actuals; BMRS's forecast datasets are live-only, gb-bm-data has actuals only |
 | NONBM (non-BM STOR volumes) | `nonbm_stor_lag2` | Partial match. The historical endpoint returned 23 events in this window; values are aggregated per settlement period and missing periods are zero |
 | Inter Delta (interconnector flow change) | Not reproduced | The BMRS endpoint ignores historical date parameters and returns live data; the client now rejects it for historical requests |
-| LOLP (Ganesh & Bunn's sparse binary dummy) | Not reproduced | No LOLP endpoint in BMRS v2 or a confirmed NESO historical archive for this window |
+| LOLP (Ganesh & Bunn's sparse binary dummy) | Not reproduced | No LOLP endpoint in BMRS or a confirmed NESO historical archive for this window |
 
 **Two direct regressors plus one sparse partial match survive.** This is reported upfront because it
 materially limits how far either reproduction can be expected to match its
@@ -190,7 +190,7 @@ python src/04_ganesh_bunn_fcnn.py
 
 Karan Homayounfar ([KNHNF](https://github.com/KNHNF)). Part of a small set
 of independent GB balancing-market forecasting-paper reproductions built on
-[gb-bm-data](../gb-bm-data), alongside a separate MSc dissertation on GB
+[gb-bm-data](https://github.com/KNHNF/gb-bm-data), alongside a separate MSc dissertation on GB
 balancing market cost forecasting.
 
 ## Licence

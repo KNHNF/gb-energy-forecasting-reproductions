@@ -8,7 +8,7 @@ An independent reproduction of the methodology in:
 
 No public code repository exists for this paper (checked 2026-08-14). This
 project rebuilds the paper's feature set and model comparison from scratch,
-using [gb-bm-data](../gb-bm-data) (a typed client for the Elexon BMRS v2 API
+using [gb-bm-data](https://github.com/KNHNF/gb-bm-data) (a client for the Elexon BMRS API
 and the Carbon Intensity API, built for a separate dissertation project) as
 the data layer.
 
@@ -48,8 +48,8 @@ PDF, only the approximate window length ("2018 to mid-2019" in the source
 material used here); the paper-parity run is a comparable-length historical
 sample, not a dated match to the paper's exact data.
 
-- **Sources (both runs):** BMRS v2 `/balancing/settlement/system-prices`
-  (SBP, SSP, NIV, accepted offer/bid volumes), BMRS v2 `/generation/outturn`
+- **Sources (both runs):** BMRS `/balancing/settlement/system-prices`
+  (SBP, SSP, NIV, accepted offer/bid volumes), BMRS `/generation/outturn`
   (system demand), Carbon Intensity API `/generation` (wind/solar/gas/nuclear/
   imports mix).
 - **Gaps:** the Carbon Intensity API has real coverage gaps (same issue
@@ -69,7 +69,7 @@ fetch script for the window you want, then `src/02_build_features.py`.
 | Paper feature (Section 3.2) | This reproduction | Status |
 |---|---|---|
 | NIV | `netImbalanceVolume` | Direct match |
-| LOLP (5 variants, aggregated + time-ahead) | `netImbalanceVolume` and its lags (1, 2, 48 SP) | **Proxy.** No LOLP endpoint exists in BMRS v2 (confirmed by direct testing: `/system/lolp`, `/balancing/lolp`, `/forecast/surplus/daily` all return empty or 404). NIV is a documented partial correlate of LOLP, but this reproduction has one proxy family, not five variants. |
+| LOLP (5 variants, aggregated + time-ahead) | `netImbalanceVolume` and its lags (1, 2, 48 SP) | **Proxy.** No LOLP endpoint exists in BMRS (confirmed by direct testing: `/system/lolp`, `/balancing/lolp`, `/forecast/surplus/daily` all return empty or 404). NIV is a documented partial correlate of LOLP, but this reproduction has one proxy family, not five variants. |
 | Base production | `(gas_pct + nuclear_pct) / 100 * demand_mw` | **Proxy.** Derived from generation-mix percentages, not plant-level baseload MW. |
 | System load | `demand_mw` | Direct match |
 | Solar generation | `solar_pct / 100 * demand_mw` | Direct match (derived) |
@@ -234,7 +234,7 @@ Energies, 13(20), p. 5420.
 
 Karan Homayounfar ([KNHNF](https://github.com/KNHNF)). Built as an
 independent reproduction exercise alongside a separate MSc dissertation on
-GB balancing market cost forecasting, which [gb-bm-data](../gb-bm-data) was
+GB balancing market cost forecasting, which [gb-bm-data](https://github.com/KNHNF/gb-bm-data) was
 originally extracted from.
 
 ## Licence

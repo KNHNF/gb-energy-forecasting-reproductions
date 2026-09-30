@@ -32,7 +32,7 @@ confirm, and all three turned out to be wrong:
 
 Reuses the raw system-price CSV already fetched for
 [bunn-ganesh-2021-2024-reproduction](../bunn-ganesh-2021-2024-reproduction)
-(BMRS v2, 2016-07-01 to 2019-09-30, a superset of the paper's confirmed
+(BMRS, 2016-07-01 to 2019-09-30, a superset of the paper's confirmed
 2016-07-01 to 2019-06-30 window), rather than re-fetching. `src/01_build_
 features.py` keeps only `systemBuyPrice`, renamed `imbalance_price`; no
 other column is passed to the model, per the confirmed univariate input.
@@ -128,7 +128,7 @@ python src/02_bilstm_model.py
 
 Karan Homayounfar ([KNHNF](https://github.com/KNHNF)). Part of a small set
 of independent GB balancing-market forecasting-paper reproductions built on
-[gb-bm-data](../gb-bm-data), alongside a separate MSc dissertation on GB
+[gb-bm-data](https://github.com/KNHNF/gb-bm-data), alongside a separate MSc dissertation on GB
 balancing market cost forecasting.
 
 ## Licence
