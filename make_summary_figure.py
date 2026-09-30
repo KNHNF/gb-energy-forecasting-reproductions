@@ -1,4 +1,5 @@
-"""Draw docs/reported_vs_reproduced.png from the saved result files in each reproduction."""
+"""Draw the comparison figure from the saved result files in each reproduction."""
+import argparse
 import json
 from pathlib import Path
 
@@ -8,6 +9,17 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
 ROOT = Path(__file__).resolve().parent
+
+
+def parse_arguments() -> argparse.Namespace:
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "--output",
+        type=Path,
+        default=ROOT / "docs" / "reported_vs_reproduced.png",
+        help="Path for the generated PNG.",
+    )
+    return parser.parse_args()
 
 
 def load(*parts):
@@ -56,6 +68,7 @@ fig.suptitle("Three reproductions against the numbers the papers report", x=0.01
 fig.text(0.01, 0.01, "Grey is the paper, green is my reproduction. Only the Lucas MAE on the paper's own window matches. Lucas R2 and the other two papers do not.",
          fontsize=7.5, color="#555555")
 fig.tight_layout(rect=(0, 0.04, 1, 0.94))
-out = ROOT / "docs" / "reported_vs_reproduced.png"
+out = parse_arguments().output
+out.parent.mkdir(parents=True, exist_ok=True)
 fig.savefig(out)
 print("saved", out, out.stat().st_size // 1024, "KB")

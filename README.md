@@ -50,6 +50,16 @@ Each subfolder is a self-contained project with its own `pyproject.toml`,
 `requirements.txt`, and `LICENSE`. See the subfolder README for exact
 reproduction commands.
 
+To check the saved result inputs and regenerate the root comparison figure:
+
+```bash
+python -m pip install -r requirements.txt
+python tests/test_smoke.py
+```
+
+This root-level check does not fetch data or retrain any model. Full
+reproduction still uses the commands in each subfolder README.
+
 ## References
 
 Bunn, D.W., Inekwe, J.N. and MacGeehan, D. (2021) 'Analysis of the
