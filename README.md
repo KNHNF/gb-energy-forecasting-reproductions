@@ -14,6 +14,10 @@ These are reproduction attempts, not replications. Each README states
 plainly where the result differs from the paper and why, rather than
 adjusting the method until the numbers match.
 
+![Bar charts comparing each paper's reported error with my reproduction. Only the Lucas MAE on the paper's own window matches, the other results are worse than the papers](docs/reported_vs_reproduced.png)
+
+The figure is drawn from the saved result files by `make_summary_figure.py`. Only one number matches its paper: the Lucas MAE on the paper's own 2018 to 2019 window. On recent data it is higher, and the Deng and Bunn reproductions are worse than the papers report.
+
 ## The three papers
 
 | Folder | Paper | What it tests |
@@ -35,6 +39,10 @@ A forecasting result only means something next to a stated benchmark. These
 three reproductions establish what the published literature actually claims
 on this market, using data and code I can verify myself, before comparing
 my own dissertation model against it.
+
+## A data alignment note
+
+The data was fetched with `gb-bm-data` 0.1.0, which numbered demand and generation-mix settlement periods from 00:00 UTC. That is two periods behind the official numbering in British Summer Time, so those features are misaligned with the price target by an hour for about seven months a year. Version 0.2.0 fixes it, and `utc_index=True` gives the old numbering back. I have not re-run these reproductions. In my dissertation model the same issue changed the day-ahead error by 0.014%, but I have not checked it for these models.
 
 ## Setup
 
